@@ -18,8 +18,5 @@ public class DataSaver : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    public void NewGame()
-    {
-        SceneManager.LoadScene(1);
-    }
+    
 }
