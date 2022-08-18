@@ -6,7 +6,7 @@ using TMPro;
 public class MainUIHandler : MonoBehaviour
 {
     public TextMeshProUGUI playerInfo;
-    public int BestScore = 0;
+    public int BestScore;
     private string username;
     
     void Start()

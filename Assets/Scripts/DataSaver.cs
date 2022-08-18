@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 public class DataSaver : MonoBehaviour
 {
     public static DataSaver Instance;
     public string PlayerName;
+    
     private void Awake()
     {
     
@@ -13,10 +15,10 @@ public class DataSaver : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+             
         }
         
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-    
 }

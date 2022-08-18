@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -13,18 +14,21 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public GameObject GameOverText;
     
+    [SerializeField] GameObject UiHandler;
+    MainUIHandler UiScript;
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        UiScript = UiHandler.GetComponent<MainUIHandler>();
+        //UiScript = GetComponent<MainUIHandler>();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
         int[] pointCountArray = new [] {1,1,2,2,5,5};
         for (int i = 0; i < LineCount; ++i)
         {
@@ -36,6 +40,7 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        LoadScore();
     }
 
     private void Update()
@@ -60,6 +65,10 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
     void AddPoint(int point)
@@ -72,5 +81,36 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        SaveScore();
     }
+    [System.Serializable]
+    public class SaveData
+    {
+        public int playerHighestScore;
+    }
+    public void SaveScore()
+    {
+        SaveData data = new SaveData();
+        if (m_Points > UiScript.BestScore )
+        {
+        data.playerHighestScore = m_Points;
+        string json = JsonUtility.ToJson(data);
+  
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        }
+        
+    }
+        public void LoadScore()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            
+            
+            UiScript.BestScore = data.playerHighestScore;
+        }
+    }
+
 }
